@@ -29,13 +29,15 @@ namespace TestApplication
         public bool isStart { get; set; } // свойство, определяющее состояние кнопки
         public string errorText { get; set; }
 
-        public bool Validator() // метод, проверяющий входное число на правильность ввода
+        public bool Validate() // метод, проверяющий входное число на правильность ввода
         {
             int dig;
             if (!int.TryParse(inputValue.Text.ToString(), out dig))
             {
                 errorText = "Неверный формат строки";
                 progressBar.Value = 0;
+                isStart = false;
+                btn.Content = "Start";
             }
             else
             {
@@ -53,7 +55,7 @@ namespace TestApplication
         {
             if (isStart)
             {
-                if (Validator())
+                if (Validate())
                 {
                     Random random = new Random();
                     progressBar.Value = random.Next(Convert.ToInt32(inputValue.Text));
@@ -81,17 +83,21 @@ namespace TestApplication
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            if (btn.Content == "Start")
+            if (Validate())
             {
-                isStart = true;
-                btn.Content = "Stop";
-                RandomValue();
+                if (btn.Content == "Start")
+                {
+                    isStart = true;
+                    btn.Content = "Stop";
+                    RandomValue();
+                }
+                else
+                {
+                    isStart = false;
+                    btn.Content = "Start";
+                }
             }
-            else
-            {
-                isStart = false;
-                btn.Content = "Start";
-            }
+            else lName.Content = errorText;
         }
 
         private void ProgressBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
